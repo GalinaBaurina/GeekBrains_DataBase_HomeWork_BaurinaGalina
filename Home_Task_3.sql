@@ -1,5 +1,5 @@
--- ������������� ����� http://filldb.info ������, ��������� ��� ��� �������
--- ������� ��� ������� media_likes � photo_likes ��� ������ 
+-- Сгенерировала через http://filldb.info данные для всех таблиц
+-- Создала таблицы media_likes и photo_likes для лайков медиа и фото
 
 DROP DATABASE IF EXISTS vk;
 CREATE DATABASE vk;
@@ -9,10 +9,10 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
 	id SERIAL PRIMARY KEY, -- SERIAL = BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE
     firstname VARCHAR(50),
-    lastname VARCHAR(50) COMMENT 'Фамиль', -- COMMENT на случай, если имя неочевидное
+    lastname VARCHAR(50) COMMENT 'Ð¤Ð°Ð¼Ð¸Ð»ÑŒ', -- COMMENT Ð½Ð° ÑÐ»ÑƒÑ‡Ð°Ð¹, ÐµÑÐ»Ð¸ Ð¸Ð¼Ñ Ð½ÐµÐ¾Ñ‡ÐµÐ²Ð¸Ð´Ð½Ð¾Ðµ
     email VARCHAR(120) UNIQUE,
     phone BIGINT, 
-    INDEX users_phone_idx(phone), -- как выбирать индексы?
+    INDEX users_phone_idx(phone), -- ÐºÐ°Ðº Ð²Ñ‹Ð±Ð¸Ñ€Ð°Ñ‚ÑŒ Ð¸Ð½Ð´ÐµÐºÑÑ‹?
     INDEX users_firstname_lastname_idx(firstname, lastname)
 );
 
@@ -125,10 +125,10 @@ CREATE TABLE `profiles` (
 	photo_id BIGINT UNSIGNED NULL,
     created_at DATETIME DEFAULT NOW(),
     hometown VARCHAR(100),
-    FOREIGN KEY (user_id) REFERENCES users(id) -- что за зверь в целом?
-    	ON UPDATE CASCADE -- как это работает? Какие варианты?
-    	ON DELETE restrict -- как это работает? Какие варианты?
-    -- , FOREIGN KEY (photo_id) REFERENCES media(id) -- пока рано, т.к. таблицы media еще нет
+    FOREIGN KEY (user_id) REFERENCES users(id) -- Ñ‡Ñ‚Ð¾ Ð·Ð° Ð·Ð²ÐµÑ€ÑŒ Ð² Ñ†ÐµÐ»Ð¾Ð¼?
+    	ON UPDATE CASCADE -- ÐºÐ°Ðº ÑÑ‚Ð¾ Ñ€Ð°Ð±Ð¾Ñ‚Ð°ÐµÑ‚? ÐšÐ°ÐºÐ¸Ðµ Ð²Ð°Ñ€Ð¸Ð°Ð½Ñ‚Ñ‹?
+    	ON DELETE restrict -- ÐºÐ°Ðº ÑÑ‚Ð¾ Ñ€Ð°Ð±Ð¾Ñ‚Ð°ÐµÑ‚? ÐšÐ°ÐºÐ¸Ðµ Ð²Ð°Ñ€Ð¸Ð°Ð½Ñ‚Ñ‹?
+    -- , FOREIGN KEY (photo_id) REFERENCES media(id) -- Ð¿Ð¾ÐºÐ° Ñ€Ð°Ð½Ð¾, Ñ‚.Ðº. Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ñ‹ media ÐµÑ‰Ðµ Ð½ÐµÑ‚
 );
 
 INSERT INTO `profiles` VALUES ('1',NULL,'2008-10-21','1','1989-01-09 11:08:50',NULL),
@@ -239,7 +239,7 @@ CREATE TABLE messages (
 	from_user_id BIGINT UNSIGNED NOT NULL,
     to_user_id BIGINT UNSIGNED NOT NULL,
     body TEXT,
-    created_at DATETIME DEFAULT NOW(), -- можно будет даже не упоминать это поле при вставке
+    created_at DATETIME DEFAULT NOW(), -- Ð¼Ð¾Ð¶Ð½Ð¾ Ð±ÑƒÐ´ÐµÑ‚ Ð´Ð°Ð¶Ðµ Ð½Ðµ ÑƒÐ¿Ð¾Ð¼Ð¸Ð½Ð°Ñ‚ÑŒ ÑÑ‚Ð¾ Ð¿Ð¾Ð»Ðµ Ð¿Ñ€Ð¸ Ð²ÑÑ‚Ð°Ð²ÐºÐµ
     INDEX messages_from_user_id (from_user_id),
     INDEX messages_to_user_id (to_user_id),
     FOREIGN KEY (from_user_id) REFERENCES users(id),
@@ -350,17 +350,17 @@ INSERT INTO `messages` VALUES ('1','1','1','Dolore minima sed qui ut. Ut maiores
 
 DROP TABLE IF EXISTS friend_requests;
 CREATE TABLE friend_requests (
-	-- id SERIAL PRIMARY KEY, -- изменили на композитный ключ (initiator_user_id, target_user_id)
+	-- id SERIAL PRIMARY KEY, -- Ð¸Ð·Ð¼ÐµÐ½Ð¸Ð»Ð¸ Ð½Ð° ÐºÐ¾Ð¼Ð¿Ð¾Ð·Ð¸Ñ‚Ð½Ñ‹Ð¹ ÐºÐ»ÑŽÑ‡ (initiator_user_id, target_user_id)
 	initiator_user_id BIGINT UNSIGNED NOT NULL,
     target_user_id BIGINT UNSIGNED NOT NULL,
     -- `status` TINYINT UNSIGNED,
     `status` ENUM('requested', 'approved', 'unfriended', 'declined'),
-    -- `status` TINYINT UNSIGNED, -- в этом случае в коде хранили бы цифирный enum (0, 1, 2, 3...)
+    -- `status` TINYINT UNSIGNED, -- Ð² ÑÑ‚Ð¾Ð¼ ÑÐ»ÑƒÑ‡Ð°Ðµ Ð² ÐºÐ¾Ð´Ðµ Ñ…Ñ€Ð°Ð½Ð¸Ð»Ð¸ Ð±Ñ‹ Ñ†Ð¸Ñ„Ð¸Ñ€Ð½Ñ‹Ð¹ enum (0, 1, 2, 3...)
 	requested_at DATETIME DEFAULT NOW(),
 	confirmed_at DATETIME,
 	
     PRIMARY KEY (initiator_user_id, target_user_id),
-	INDEX (initiator_user_id), -- потому что обычно будем искать друзей конкретного пользователя
+	INDEX (initiator_user_id), -- Ð¿Ð¾Ñ‚Ð¾Ð¼Ñƒ Ñ‡Ñ‚Ð¾ Ð¾Ð±Ñ‹Ñ‡Ð½Ð¾ Ð±ÑƒÐ´ÐµÐ¼ Ð¸ÑÐºÐ°Ñ‚ÑŒ Ð´Ñ€ÑƒÐ·ÐµÐ¹ ÐºÐ¾Ð½ÐºÑ€ÐµÑ‚Ð½Ð¾Ð³Ð¾ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ñ
     INDEX (target_user_id),
     FOREIGN KEY (initiator_user_id) REFERENCES users(id),
     FOREIGN KEY (target_user_id) REFERENCES users(id)
@@ -682,7 +682,7 @@ CREATE TABLE users_communities(
 	user_id BIGINT UNSIGNED NOT NULL,
 	community_id BIGINT UNSIGNED NOT NULL,
   
-	PRIMARY KEY (user_id, community_id), -- чтобы не было 2 записей о пользователе и сообществе
+	PRIMARY KEY (user_id, community_id), -- Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð½Ðµ Ð±Ñ‹Ð»Ð¾ 2 Ð·Ð°Ð¿Ð¸ÑÐµÐ¹ Ð¾ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ðµ Ð¸ ÑÐ¾Ð¾Ð±Ñ‰ÐµÑÑ‚Ð²Ðµ
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (community_id) REFERENCES communities(id)
 );
@@ -795,7 +795,7 @@ CREATE TABLE media_types(
     created_at DATETIME DEFAULT NOW(),
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
-    -- записей мало, поэтому индекс будет лишним (замедлит работу)!
+    -- Ð·Ð°Ð¿Ð¸ÑÐµÐ¹ Ð¼Ð°Ð»Ð¾, Ð¿Ð¾ÑÑ‚Ð¾Ð¼Ñƒ Ð¸Ð½Ð´ÐµÐºÑ Ð±ÑƒÐ´ÐµÑ‚ Ð»Ð¸ÑˆÐ½Ð¸Ð¼ (Ð·Ð°Ð¼ÐµÐ´Ð»Ð¸Ñ‚ Ñ€Ð°Ð±Ð¾Ñ‚Ñƒ)!
 );
 
 INSERT INTO `media_types` VALUES ('1','rerum','2009-12-27 06:03:47','1972-05-23 22:10:31'),
@@ -1024,9 +1024,9 @@ CREATE TABLE media_likes(
     user_id BIGINT UNSIGNED NOT NULL,
     media_id BIGINT UNSIGNED NOT NULL,
     created_at DATETIME DEFAULT NOW()
-    -- PRIMARY KEY (user_id, media_id) – можно было и так вместо id в качестве PK
-  	-- слишком увлекаться индексами тоже опасно, рациональнее их добавлять по мере необходимости (напр., провисают по времени какие-то запросы)  
-    -- намеренно забыли, чтобы увидеть нехватку в ER-диаграмме
+    -- PRIMARY KEY (user_id, media_id) â€“ Ð¼Ð¾Ð¶Ð½Ð¾ Ð±Ñ‹Ð»Ð¾ Ð¸ Ñ‚Ð°Ðº Ð²Ð¼ÐµÑÑ‚Ð¾ id Ð² ÐºÐ°Ñ‡ÐµÑÑ‚Ð²Ðµ PK
+  	-- ÑÐ»Ð¸ÑˆÐºÐ¾Ð¼ ÑƒÐ²Ð»ÐµÐºÐ°Ñ‚ÑŒÑÑ Ð¸Ð½Ð´ÐµÐºÑÐ°Ð¼Ð¸ Ñ‚Ð¾Ð¶Ðµ Ð¾Ð¿Ð°ÑÐ½Ð¾, Ñ€Ð°Ñ†Ð¸Ð¾Ð½Ð°Ð»ÑŒÐ½ÐµÐµ Ð¸Ñ… Ð´Ð¾Ð±Ð°Ð²Ð»ÑÑ‚ÑŒ Ð¿Ð¾ Ð¼ÐµÑ€Ðµ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾ÑÑ‚Ð¸ (Ð½Ð°Ð¿Ñ€., Ð¿Ñ€Ð¾Ð²Ð¸ÑÐ°ÑŽÑ‚ Ð¿Ð¾ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð¸ ÐºÐ°ÐºÐ¸Ðµ-Ñ‚Ð¾ Ð·Ð°Ð¿Ñ€Ð¾ÑÑ‹)  
+    -- Ð½Ð°Ð¼ÐµÑ€ÐµÐ½Ð½Ð¾ Ð·Ð°Ð±Ñ‹Ð»Ð¸, Ñ‡Ñ‚Ð¾Ð±Ñ‹ ÑƒÐ²Ð¸Ð´ÐµÑ‚ÑŒ Ð½ÐµÑ…Ð²Ð°Ñ‚ÐºÑƒ Ð² ER-Ð´Ð¸Ð°Ð³Ñ€Ð°Ð¼Ð¼Ðµ
     , FOREIGN KEY (user_id) REFERENCES users(id)
     , FOREIGN KEY (media_id) REFERENCES media(id)
 );
